@@ -1,0 +1,63 @@
+{
+  "users": [
+    { "user_id": "u001", "username": "AlphaWave", "email": "alpha@example.com", "status": "online" },
+    { "user_id": "u002", "username": "NeoScript", "email": "neo@example.com", "status": "offline" },
+    { "user_id": "u003", "username": "PixelPilot", "email": "pixel@example.com", "status": "online" },
+    { "user_id": "u004", "username": "DataWhisper", "email": "whisper@example.com", "status": "away" },
+    { "user_id": "u005", "username": "SkyFrost", "email": "sky@example.com", "status": "offline" },
+    { "user_id": "u006", "username": "EchoKnight", "email": "echo@example.com", "status": "online" },
+    { "user_id": "u007", "username": "QuantumStar", "email": "quantum@example.com", "status": "offline" },
+    { "user_id": "u008", "username": "CyberNova", "email": "nova@example.com", "status": "busy" },
+    { "user_id": "u009", "username": "IronByte", "email": "iron@example.com", "status": "online" },
+    { "user_id": "u010", "username": "SilentFlare", "email": "flare@example.com", "status": "offline" },
+    { "user_id": "u011", "username": "MoonCoder", "email": "moon@example.com", "status": "offline" },
+    { "user_id": "u012", "username": "ThunderLeaf", "email": "leaf@example.com", "status": "online" },
+    { "user_id": "u013", "username": "CrystalCore", "email": "crystal@example.com", "status": "away" },
+    { "user_id": "u014", "username": "VortexWing", "email": "vortex@example.com", "status": "busy" },
+    { "user_id": "u015", "username": "SolarBlade", "email": "blade@example.com", "status": "online" },
+    { "user_id": "u016", "username": "DriftSoul", "email": "drift@example.com", "status": "offline" },
+    { "user_id": "u017", "username": "GlitchGuru", "email": "glitch@example.com", "status": "online" },
+    { "user_id": "u018", "username": "ShadowNode", "email": "shadow@example.com", "status": "away" },
+    { "user_id": "u019", "username": "NovaBolt", "email": "bolt@example.com", "status": "offline" },
+    { "user_id": "u020", "username": "RiftCaster", "email": "rift@example.com", "status": "online" }
+  ],
+
+  "conversations": [
+    {
+      "conversation_id": "c1001",
+      "participants": ["u001", "u003"],
+      "messages": [
+        {
+          "message_id": "m001",
+          "sender_id": "u001",
+          "text": "You online? Need help testing the chat UI.",
+          "timestamp": "2025-01-10T10:00:00Z"
+        },
+        {
+          "message_id": "m002",
+          "sender_id": "u003",
+          "text": "Yep, sending packets like confetti!",
+          "timestamp": "2025-01-10T10:01:15Z"
+        }
+      ]
+    },
+    {
+      "conversation_id": "c1002",
+      "participants": ["u007", "u012", "u019"],
+      "messages": [
+        {
+          "message_id": "m010",
+          "sender_id": "u012",
+          "text": "Who's joining the late-night debugging ritual?",
+          "timestamp": "2025-01-09T22:15:00Z"
+        },
+        {
+          "message_id": "m011",
+          "sender_id": "u007",
+          "text": "Count me in. Coffee deployed.",
+          "timestamp": "2025-01-09T22:16:20Z"
+        }
+      ]
+    }
+  ]
+}

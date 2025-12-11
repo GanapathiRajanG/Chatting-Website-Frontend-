@@ -3,11 +3,50 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {createBrowserRouter,RouterProvider} from "react-router-dom";
+import Home from './Pages/Home';
+import About from './Pages/About';
+import Search from './Pages/Search';
+import Login from './Pages/Login';
+import Chatting from './Pages/Chatting';
+
+const routerVaraible = createBrowserRouter([
+  {
+    path:"/",
+    element:<App />,
+    children:[
+      {
+        index: true,
+        element:<Home />,
+      },
+      {
+        path:"about",
+        element:<About></About>,
+      },
+      {
+        path:"search",
+        element:<Search></Search>,
+      },
+      {
+        path:"chatting",
+        element:<Chatting></Chatting>,
+      },
+      {
+        path:"login",
+        element:<Login></Login>,
+      },
+      {
+        path:"*",
+        element:<h1>Page Not Found</h1>,
+      }
+    ]
+  }
+ ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+   <RouterProvider router={routerVaraible}></RouterProvider> 
   </React.StrictMode>
 );
 
