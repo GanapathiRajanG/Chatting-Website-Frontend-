@@ -9,6 +9,7 @@ import About from './Pages/About';
 import Search from './Pages/Search';
 import Login from './Pages/Login';
 import Chatting from './Pages/Chatting';
+import Admin from './Pages/Admin';
 
 const routerVaraible = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const routerVaraible = createBrowserRouter([
       {
         path:"login",
         element:<Login></Login>,
+      },
+      {
+        path:"admin",
+        element:<Admin></Admin>,
       },
       {
         path:"*",

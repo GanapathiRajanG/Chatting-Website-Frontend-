@@ -11,7 +11,7 @@ const Home = () => {
                 <div className="content">
                     <h1>Ro-Ro Chat</h1>
                     <p className="tagline">Connect instantly. Chat freely. Build communities.</p>
-                    <div className="hero-actions">
+                    <div className="actions">
                         <Link to="/chatting" className="btn primary">Start Chatting</Link>
                         <Link to="/login" className="btn">Login</Link>
                     </div>
