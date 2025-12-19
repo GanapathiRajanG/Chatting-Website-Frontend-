@@ -30,7 +30,7 @@ const Chatting = () => {
   const loadMessages = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/messages', {
+      const response = await fetch('https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/messages', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -51,7 +51,7 @@ const Chatting = () => {
     if (newMessage.trim() && user) {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch('http://localhost:5000/api/v1/auth/messages', {
+        const response = await fetch('https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/messages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
