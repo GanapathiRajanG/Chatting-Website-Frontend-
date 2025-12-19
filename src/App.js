@@ -10,7 +10,7 @@ function App() {
     initializeDemoData();
     const fetchResponse = async()=>{
       try{
-        const response = await fetch("http://localhost:3001/detail.json");
+        const response = await fetch("https://chatting-website-backend-vgy3.onrender.com");
         const da =await response.json();
         setData(da);
       }catch(err){}

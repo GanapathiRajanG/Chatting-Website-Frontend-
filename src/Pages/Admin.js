@@ -22,7 +22,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/users', {
+      const response = await fetch('https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -39,7 +39,7 @@ const Admin = () => {
     
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/auth/users/${userId}`, {
+      const response = await fetch(`https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/users/${userId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -59,7 +59,7 @@ const Admin = () => {
     
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/auth/users/${userId}/block`, {
+      const response = await fetch(`https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/users/${userId}/block`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
       });

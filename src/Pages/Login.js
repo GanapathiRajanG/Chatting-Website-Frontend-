@@ -12,8 +12,8 @@ const Login = () => {
     e.preventDefault();
     
     const url = isLogin 
-      ? 'http://localhost:5000/api/v1/auth/login' 
-      : 'http://localhost:5000/api/v1/auth/signup';
+      ? 'https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/login' 
+      : 'https://chatting-website-backend-vgy3.onrender.com/api/v1/auth/signup';
     
     const payload = isLogin 
       ? { email: formData.email, password: formData.password }
