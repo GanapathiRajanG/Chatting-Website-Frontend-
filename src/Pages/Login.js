@@ -8,49 +8,35 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (isLogin) {
-      // Login logic
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === formData.email && u.password === formData.password);
+    const url = isLogin 
+      ? 'http://localhost:5000/api/v1/auth/login' 
+      : 'http://localhost:5000/api/v1/auth/signup';
+    
+    const payload = isLogin 
+      ? { email: formData.email, password: formData.password }
+      : { name: formData.name, email: formData.email, password: formData.password, confirmPassword: formData.password };
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       
-      if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        navigate(user.isAdmin ? '/admin' : '/chatting');
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('currentUser', JSON.stringify(data.data.user));
+        navigate(data.data.user.role === 'admin' ? '/admin' : '/chatting');
       } else {
-        setMessage('Invalid credentials');
+        setMessage(data.message);
       }
-    } else {
-      // Signup logic
-      if (!formData.name || !formData.email || !formData.password) {
-        setMessage('All fields required');
-        return;
-      }
-      
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      
-      if (users.find(u => u.email === formData.email)) {
-        setMessage('Email already exists');
-        return;
-      }
-      
-      const newUser = {
-        id: Date.now().toString(),
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        isAdmin: formData.email === 'admin@chat.com',
-        age: '',
-        place: '',
-        about: ''
-      };
-      
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      navigate(newUser.isAdmin ? '/admin' : '/chatting');
+    } catch (err) {
+      setMessage('Connection error');
     }
   };
 

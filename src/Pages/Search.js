@@ -5,17 +5,31 @@ const Search = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if (!searchTerm.trim()) {
             setSearchResults([]);
             return;
         }
 
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const results = users.filter(user => 
-            user.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setSearchResults(results);
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const response = await fetch('http://localhost:5000/api/v1/auth/users', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const results = data.data.users.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                setSearchResults(results);
+            }
+        } catch (err) {
+            console.log('Search error:', err);
+        }
     };
 
     return (

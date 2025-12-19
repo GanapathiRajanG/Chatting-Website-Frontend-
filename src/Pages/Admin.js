@@ -9,8 +9,9 @@ const Admin = () => {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const token = localStorage.getItem('token');
     
-    if (!userData || !userData.isAdmin) {
+    if (!userData || userData.role !== 'admin' || !token) {
       navigate('/login');
       return;
     }
@@ -18,45 +19,64 @@ const Admin = () => {
     fetchUsers();
   }, [navigate]);
 
-  const fetchUsers = () => {
-    const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    setUsers(allUsers);
+  const fetchUsers = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setUsers(data.data.users);
+      }
+    } catch (err) {
+      console.log('Error fetching users:', err);
+    }
   };
 
-  const deleteUser = (userId) => {
+  const deleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     
-    const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const updatedUsers = allUsers.filter(user => user.id !== userId);
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
-    
-    setUsers(updatedUsers);
-    setMessage('User deleted successfully');
-    setTimeout(() => setMessage(''), 3000);
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:5000/api/v1/auth/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        setMessage('User deleted successfully');
+        fetchUsers();
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (err) {
+      setMessage('Error deleting user');
+    }
   };
 
-  const blockUser = (userId) => {
+  const blockUser = async (userId) => {
     if (!window.confirm('Block this user for 1 day?')) return;
     
-    const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const userIndex = allUsers.findIndex(user => user.id === userId);
-    
-    if (userIndex !== -1) {
-      const blockedUntil = new Date();
-      blockedUntil.setDate(blockedUntil.getDate() + 1);
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:5000/api/v1/auth/users/${userId}/block`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       
-      allUsers[userIndex].isBlocked = true;
-      allUsers[userIndex].blockedUntil = blockedUntil.toISOString();
-      
-      localStorage.setItem('users', JSON.stringify(allUsers));
-      setUsers(allUsers);
-      setMessage('User blocked for 1 day');
-      setTimeout(() => setMessage(''), 3000);
+      if (response.ok) {
+        setMessage('User blocked for 1 day');
+        fetchUsers();
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (err) {
+      setMessage('Error blocking user');
     }
   };
 
   const logout = () => {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -83,7 +103,7 @@ const Admin = () => {
           </thead>
           <tbody>
             {users.map(user => (
-              <tr key={user.id}>
+              <tr key={user._id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
@@ -95,19 +115,19 @@ const Admin = () => {
                     <span className="active">Active</span>
                   )}
                 </td>
-                <td>{new Date().toLocaleDateString()}</td>
+                <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td>
-                  {!user.isAdmin && (
+                  {user.role !== 'admin' && (
                     <div className="actions">
                       <button 
-                        onClick={() => blockUser(user.id)} 
+                        onClick={() => blockUser(user._id)} 
                         className="block-btn"
                         disabled={user.isBlocked}
                       >
                         Block
                       </button>
                       <button 
-                        onClick={() => deleteUser(user.id)} 
+                        onClick={() => deleteUser(user._id)} 
                         className="delete-btn"
                       >
                         Delete

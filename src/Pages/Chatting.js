@@ -11,52 +11,68 @@ const Chatting = () => {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const token = localStorage.getItem('token');
     
-    if (!userData) {
+    if (!userData || !token) {
       navigate('/login');
       return;
     }
     
     setUser(userData);
+    loadMessages();
     
-    // Load messages from localStorage
-    const savedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-    setMessages(savedMessages);
-    
-    // Simulate real-time updates by checking localStorage periodically
-    const interval = setInterval(() => {
-      const currentMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-      setMessages(currentMessages);
-    }, 1000);
+    // Refresh messages every 2 seconds
+    const interval = setInterval(loadMessages, 2000);
     
     return () => clearInterval(interval);
   }, [navigate]);
+
+  const loadMessages = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/messages', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setMessages(data.data.messages);
+      }
+    } catch (err) {
+      console.log('Error loading messages:', err);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (newMessage.trim() && user) {
-      const message = {
-        id: Date.now(),
-        sender: user.id,
-        senderName: user.name,
-        message: newMessage,
-        timestamp: new Date().toISOString()
-      };
-      
-      const currentMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-      const updatedMessages = [...currentMessages, message];
-      localStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
-      setMessages(updatedMessages);
-      setNewMessage('');
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:5000/api/v1/auth/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ message: newMessage })
+        });
+        
+        if (response.ok) {
+          setNewMessage('');
+          loadMessages();
+        }
+      } catch (err) {
+        console.log('Error sending message:', err);
+      }
     }
   };
 
   const logout = () => {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -72,10 +88,10 @@ const Chatting = () => {
       
       <div className="messages-container">
         {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender === user?.id ? 'own' : 'other'}`}>
+          <div key={index} className={`message ${msg.sender === user?._id ? 'own' : 'other'}`}>
             <div className="message-header">
               <span className="sender">{msg.senderName}</span>
-              <span className="time">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+              <span className="time">{new Date(msg.createdAt).toLocaleTimeString()}</span>
             </div>
             <div className="message-text">{msg.message}</div>
           </div>

@@ -23,29 +23,37 @@ const About = () => {
     });
   }, [navigate]);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     
-    const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    if (!userData) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       navigate('/login');
       return;
     }
     
-    // Update current user
-    const updatedUser = { ...userData, ...profile };
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-    
-    // Update in users array
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const userIndex = users.findIndex(u => u.id === userData.id);
-    if (userIndex !== -1) {
-      users[userIndex] = updatedUser;
-      localStorage.setItem('users', JSON.stringify(users));
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profile)
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        localStorage.setItem('currentUser', JSON.stringify(data.data.user));
+        setMessage('Profile updated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage(data.message);
+      }
+    } catch (err) {
+      setMessage('Connection error');
     }
-    
-    setMessage('Profile updated successfully!');
-    setTimeout(() => setMessage(''), 3000);
   };
 
   const handleChange = (field, value) => {
